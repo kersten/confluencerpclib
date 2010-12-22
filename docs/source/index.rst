@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 ============
-pyConfluence
+confluencerpclib
 ============
 
 confluencerpclib is a Python_ library for Atlassian_ Confluence_ Wiki. 

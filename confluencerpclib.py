@@ -62,7 +62,7 @@ class connect():
         raise ConfluenceException("Not implemented yet.")
 
     def convertToPersonalSpace(self, userName, spaceKey, newSpaceName,
-        updateLinks=True):
+                               updateLinks=True):
         raise ConfluenceException("Not implemented yet.")
 
     def storeSpace(self, space):
@@ -184,7 +184,7 @@ class connect():
         raise ConfluenceException("Not implemented yet.")
 
     def removePermissionFromSpace(self, permission, remoteEntityName,
-        spaceKey):
+                                  spaceKey):
         raise ConfluenceException("Not implemented yet.")
 
     def addAnonymousPermissionToSpace(self, permission, spaceKey):
@@ -321,6 +321,684 @@ class connect():
 
     def removeLabelByNameFromSpace(self, labelName, spaceKey):
         raise ConfluenceException("Not implemented yet.")
+
+
+class ServerInfo(object):
+    """
+    :param majorVersion: the major version number of the Confluence instance
+    :type key: int
+    :param minorVersion: the minor version number of the Confluence instance
+    :type key: int
+    :param patchLevel: the patch-level of the Confluence instance
+    :type key: int
+    :param buildId: the build ID of the Confluence instance (usually a number)
+    :type key: str
+    :param developementBuild: Whether the build is a developer-only
+        release or not
+    :type key: bool
+    :param baseUrl: The base URL for the confluence instance
+    :type key: str
+    """
+
+    def __init__(self):
+        self.majorVersion = 0
+        self.minorVersion = 0
+        self.patchLevel = 0
+        self.buildId = ''
+        self.developmentBuild = False
+        self.baseUrl = ''
+
+    def __repr__(self):
+        return '<%s %r>' % (type(self).__name__, self.baseUrl)
+
+    def __str__(self):
+        return "Atlassian Confluence %s" % (self.version)
+
+    def __unicode__(self):
+        return unicode(__str__)
+
+    @property
+    def version(self):
+        return ".".join(map(str, (self.major_version,
+               self.minor_version, self.patch_level)))
+
+    def display(self, info):
+        """Convert the XML-RPC dict to the ServerInfo class.
+        :param info: The XML-RPC dict
+        :type info: dict
+        """
+        self.majorVersion = int(info['majorVersion'])
+        self.minorVersion = int(info['minorVersion'])
+        self.patchLevel = int(info['patchLevel'])
+        self.buildId = str(info['buildId'])
+        self.developmentBuild = bool(info['developmentBuild'])
+        self.baseUrl = str(info['baseUrl'])
+        return self
+
+
+class SpaceSummary(object):
+    """
+    :param key: the space key
+    :type key: str
+    :param name: the name of the space
+    :type key: str
+    :param type: type of the space
+    :type type: str
+    :param url: the url to the view this space online
+    :type url: str
+    """
+
+    def __init__(self):
+        self.key = ''
+        self.name = ''
+        self.type = ''
+        self.url = ''
+
+    def __repr__(self):
+        return '<%s %r>' % (type(self).__name__, self.key)
+
+    def __str__(self):
+        return "%s" % (self.name)
+
+    def __unicode__(self):
+        return unicode(__str__)
+
+    def display(self, summary):
+        """Convert the XML-RPC dict to the SpaceSummary class.
+        :param summary: The XML-RPC dict
+        :type summary: dict
+        """
+        self.key = str(summary['key'])
+        self.name = str(summary['name'])
+        self.type = str(summary['type'])
+        self.url = str(summary['url'])
+        return self
+
+
+class Space(object):
+    """
+    :param key: the space key
+    :type key: str
+    :param name: the name of the space
+    :type name: str
+    :param url: the url to view this space online
+    :type url: str
+    :param homepage: the id of the space homepage
+    :type homepage: str
+    :param description: the HTML rendered space description
+    :type description: str
+    """
+
+    def __init__(self):
+        self.key = ''
+        self.name = ''
+        self.url = ''
+        self.homePage = ''
+        self.description = ''
+
+    def __repr__(self):
+        return '<%s %r>' % (type(self).__name__, self.key)
+
+    def __str__(self):
+        return "%s" % (self.name)
+
+    def __unicode__(self):
+        return unicode(__str__)
+
+    def display(self, space):
+        """Convert the XML-RPC dict to the Space class.
+        :param space: The XML-RPC dict
+        :type space: dict
+        """
+        self.key = str(space['key'])
+        self.name = str(space['name'])
+        self.type = str(space['type'])
+        self.url = str(space['url'])
+        self.homePage = str(space['homePage'])
+        try:
+            self.description = str(space['description'])
+        except KeyError:
+            self.description = None
+        return self
+
+
+class PageSummary(object):
+    """
+    :param id: the id of the page
+    :type key: str
+    :param space: the key of the space that this page belongs to
+    :type key: str
+    :param parentId: the id of the parent page
+    :type type: str
+    :param title: the title of the page
+    :type type: str
+    :param url: the url to view this page online
+    :type url: str
+    :param locks: the number of locks current on this page
+    :type type: int
+    """
+
+    def __init__(self):
+        self.id = ''
+        self.space = ''
+        self.parentId = ''
+        self.title = ''
+        self.url = ''
+        self.locks= 0
+
+    def __repr__(self):
+        return '<%s %r>' % (type(self).__name__, self.id)
+
+    def __str__(self):
+        return "%s" % (self.title)
+
+    def __unicode__(self):
+        return unicode(__str__)
+
+    def display(self, summary):
+        """Convert the XML-RPC dict to the PageSummary class.
+        :param summary: The XML-RPC dict
+        :type summary: dict
+        """
+        self.id = str(summary['id'])
+        self.space = str(summary['space'])
+        self.parentId = str(summary['parentId'])
+        self.title = str(summary['title'])
+        self.url = str(summary['url'])
+        self.locks = int(summary['locks'])
+        return self
+
+
+class Page(object):
+    """
+    :param id: the id of the page
+    :type id: str
+    :param space: the key of the space taht this page belongs to
+    :type space: str
+    :param parentId: the id of the parent page
+    :type parentId: str
+    :param title: the title of the page
+    :type title: str
+    :param url: the url to view this page online
+    :type url: str
+    :param version: the version number of this page
+    :type version: int
+    :param content: the page content
+    :type content: str
+    :param created: timestamp page was created
+    :type created: datetime
+    :param creator: username of the creator
+    :type creator: str
+    :param modified: timestamp page was modified
+    :type modified: str
+    :param modifier: username of page's last modifier
+    :type modifier: str
+    :param homePage: whether or not his is a space's homepage
+    :type homePage: bool
+    :param locks: the number of locks current on this page
+    :type locks: int
+    :param contentStatus: status of the page (eg. current or deleted)
+    :type cotnentStatus: str
+    :param current: whether the page is current and not deleted
+    :type current: bool
+    """
+
+    def __init__(self):
+        self.id = ''
+        self.space = ''
+        self.parentId = ''
+        self.title = ''
+        self.url = ''
+        self.version = ''
+        self.content = ''
+        self.created = ''
+        self.creator = ''
+        self.modified = ''
+        self.modifier = ''
+        self.homePage = ''
+        self.lock = 0
+        self.contentStatus = ''
+        self.current = ''
+
+    def __repr__(self):
+        return '<%s %r>' % (type(self).__name__, self.id)
+
+    def __str__(self):
+        return "%s" % (self.title)
+
+    def __unicode__(self):
+        return unicode(__str__)
+
+    def display(self, page):
+        """Convert the XML-RPC dict to the Page class.
+        :param page: The XML-RPC dict
+        :type page: dict
+        """
+        self.id = str(page['id'])
+        self.space = str(page['space'])
+        self.parentId = str(page['parentId'])
+        self.title = str(page['title'])
+        self.url = str(page['url'])
+        self.version = int(page['version'])
+        self.content = str(page['content'])
+        self.created = str(page['created'])
+        self.creator = str(page['creator'])
+        self.modified = str(page['modified'])
+        self.modifier = str(page['modifier'])
+        self.homePage = bool(page['homePage'])
+        self.lock = int(page['locks'])
+        self.contentStatus = str(page['contentStatus'])
+        self.current = bool(page['current'])
+        return self
+
+
+class PageUpdateOptions(object):
+    """
+    :param versionComment: Edit comment for the updated page
+    :type versionComment: str
+    :param minorEdit: Is this update a 'minor edit'? (default value: false)
+    :type minorEdit: bool
+    """
+
+    def __init__(self):
+        self.versionComment = ''
+        self.minorEdit = False
+
+    def __repr__(self):
+        return '<%s %r>' % (type(self).__name__, self.versionComment)
+
+    def __str__(self):
+        return "%s" % (self.versionComment)
+
+    def __unicode__(self):
+        return unicode(__str__)
+
+    def display(self, page):
+        """Convert the XML-RPC dict to the Page class.
+        :param page: The XML-RPC dict
+        :type page: dict
+        """
+        self.versionComment = str(page['versionComment'])
+        self.minorEdit = bool(page['minorEdit'])
+        return self
+
+
+class PageHistorySummary(object):
+    """
+    :param id: the id of the historical page
+    :type id: str
+    :param version: the version of the historical page
+    :type versoin: int
+    :param modifier: the user who made the change
+    :type modifier: str
+    :param modified: timestamp change was made
+    :type modified: datetime
+    :param versionComment: the comment made when the version was changed
+    :type versionComment: str
+    """
+
+    def __init__(self):
+        self.id = ''
+        self.version = 0
+        self.modifier = ''
+        self.modified = ''
+        self.versionComment = ''
+
+    def __repr__(self):
+        return '<%s %r>' % (type(self).__name__, self.id)
+
+    def __str__(self):
+        return "%s" % (self.id)
+
+    def __unicode__(self):
+        return unicode(__str__)
+
+    def display(self, page):
+        """Convert the XML-RPC dict to the Page class.
+        :param space: The XML-RPC dict
+        :type space: dict
+        """
+        self.id = str(page['id'])
+        self.version = int(page['version'])
+        self.modifier = str(page['modifier'])
+        self.modified = page['modified']
+        try:
+            self.versionComment = str(page['versionComment'])
+        except KeyError:
+            self.versionComment = ''
+        return self
+
+
+class BlogEntrySummary(object):
+    """
+    :param id: the id of the blog entry
+    :type id: str
+    :param space: the key of the space that this blog entry belongs to
+    :type space: str
+    :param title: the title of the blog entry
+    :type title: str
+    :param url: the url to view this blog entry online
+    :type url: str
+    :param locks: the number of locks current on this page
+    :type locks: int
+    :param publishDate: the date the blog post was published
+    :type publishDate: datetime
+    """
+
+    def __init__(self):
+        self.id = ''
+        self.space = ''
+        self.title = ''
+        self.url = ''
+        self.locks = 0
+        self.publishDate = ''
+
+    def __repr__(self):
+        return '<%s %r>' % (type(self).__name__, self.id)
+
+    def __str__(self):
+        return "[%s] %s" % (self.space, self.title)
+
+    def __unicode__(self):
+        return unicode(__str__)
+
+    def display(self, entry):
+        """Convert the XML-RPC dict to the BlogEntrySummary class.
+        :param entry: The XML-RPC dict
+        :type entry: dict
+        """
+        self.id = str(entry['id'])
+        self.space = str(entry['space'])
+        self.title = str(entry['title'])
+        self.url = str(entry['url'])
+        self.locks = int(entry['locks'])
+        self.publishDate = entry['publishDate']
+        return self
+
+
+class BlogEntry(object):
+    """
+    :param id: the id of the blog entry
+    :type id: str
+    :param space: the key of the space that this blog entry belongs to
+    :type space: str
+    :param title: the title of the blog entry
+    :type title: str
+    :param url: the url to view this blog entry online
+    :type url: str
+    :param version: the version number of this blog entry
+    :type version: int
+    :param content: the blog entry content
+    :type content: str
+    :param locks: the number of locks current on this page
+    :type locks: int
+    """
+
+    def __init__(self):
+        self.id = ''
+        self.space = ''
+        self.title = ''
+        self.url = ''
+        self.version = 0
+        self.content = ''
+        self.locks = 0
+
+    def __repr__(self):
+        return '<%s %r>' % (type(self).__name__, self.id)
+
+    def __str__(self):
+        return "[%s] %s" % (self.space, self.title)
+
+    def __unicode__(self):
+        return unicode(__str__)
+
+    def display(self, entry):
+        """Convert the XML-RPC dict to the BlogEntry class.
+        :param entry: The XML-RPC dict
+        :type entry: dict
+        """
+        self.id = str(entry['id'])
+        self.space = str(entry['space'])
+        self.title = str(entry['title'])
+        self.url = str(entry['url'])
+        self.version = int(entry['version'])
+        self.content = str(entry['content'])
+        self.locks = int(entry['locks'])
+        return self
+
+
+class RSSFeed(object):
+    """
+    :param url: the URL of the RSS feed
+    :type url: str
+    :param title: the feed's title
+    :type title: str
+    """
+
+    def __init__(self):
+        self.url = ''
+        self.title = ''
+
+    def __repr__(self):
+        return '<%s %r>' % (type(self).__name__, self.title)
+
+    def __str__(self):
+        return "%s" % (self.title)
+
+    def __unicode__(self):
+        return unicode(__str__)
+
+    def display(self, feed):
+        """Convert the XML-RPC dict to the RSSFeed class.
+        :param feed: The XML-RPC dict
+        :type feed: dict
+        """
+        self.url = str(feed['url'])
+        self.title = str(feed['title'])
+        return self
+
+
+class SearchResult(object):
+    """
+    :param title: the feed's title
+    :type title: str
+    :param url: the remote URL needed to view the search result online
+    :type url: str
+    :param excerpt: a short excerpt of the result if it makes sense
+    :type excerpt: str
+    :param content_type: the type of this result - page, comment, spacedesc,
+        attachment, userinfo, blogpost
+    :type content_type: str
+    :param id: the long ID of the result (if the type has one)
+    :type id: str
+    """
+
+    def __init__(self):
+        self.title = ''
+        self.url = ''
+        self.excerpt = ''
+        self.type = ''
+        self.id = ''
+
+    def __repr__(self):
+        return '<%s %r>' % (type(self).__name__, self.title)
+
+    def __str__(self):
+        return "%s" % (self.title)
+
+    def __unicode__(self):
+        return unicode(__str__)
+
+    def display(self, result):
+        """Convert the XML-RPC dict to the SearchResult class.
+        :param result: The XML-RPC dict
+        :type result: dict
+        """
+        self.title = str(result['title'])
+        self.url = str(result['url'])
+        self.excerpt = str(result['excerpt'])
+        self.type = str(result['type'])
+        self.id = str(result['id'])
+        return self
+
+
+class Attachment(object):
+    """
+    :param id: numeric id of the attachment
+    :type id: int
+    :param page_id: page ID of the attachment
+    :type page_id: str
+    :param title: title of the attachment
+    :type title: str
+    :param file_name: file name of the attachment
+    :type file_name: str
+    :param file_size: numeric file size of the attachment in bytes
+    :type file_size: str
+    :param content_type: mime content type of the attachment
+    :param created: creation date of the attachment
+    :type created: datetime
+    :param creator: creator of the attachment
+    :type creator: str
+    :param url: url to download the attachment online
+    :type url: str
+    :param comment: comment for the attachment
+    :type comment: str
+    """
+
+
+class Comment(object):
+    """
+    :param id: numeric id of the comment
+    :type id: str
+    :param page_id: page ID of the comment
+    :type page_id: str
+    :param title: title of the comment
+    :param content: notated content of the comment (use render_content to
+        render)
+    :type content: str
+    :param url: url to view the comment online
+    :type url: str
+    :param created: creation date of the comment
+    :type created: datetime
+    :param creator: creator of the attachment
+    :type creator: str
+    """
+
+
+class User(object):
+    """
+    :param name: the username of this user
+    :type name: str
+    :param fullname: the full name of this user
+    :type fullname: str
+    :param email: the email address of this user
+    :type email: str
+    :param url: the url to view this user online
+    :type url: str
+    """
+
+
+class ContentPermission(object):
+    """
+    :param content_type: the type of permission. One of 'View' or 'Edit'
+    :type content_type: str
+    :param user_name: the username of the user who is permitted to see or edit
+        the content. 'None' if this is a group permission.
+    :type user_name: str
+    :param group_name: The name of the group who is permitted to see or edit
+        the content. 'None' if this is a user permission.
+    :type group_name: str
+    """
+
+
+class ContentPermissionSet(object):
+    """
+    :param content_type: the type of permission. One of 'View' or 'Edit'
+    :type content_type: str
+    :param user_name: the username of the user who is permitted to see or edit
+        the content. 'None' if this is a group permission.
+    :type user_name: str
+    :param group_name: The name of the group who is permitted to see or edit
+        the content. 'None' if this is a user permission.
+    :type group_name: str
+    """
+
+
+class Label(object):
+    """
+    :param name: the name of the label
+    :type name: str
+    :param owner: the username of the owner
+    :type owner: str
+    :param namespace: the namespace of the label
+    :type namespace: str
+    :param id: the ID of the label
+    :type id: int
+    """
+
+
+class UserInformation(object):
+    """
+    :param username: the username of this user
+    :type username: str
+    :param content: the user description
+    :type content: str
+    :param creator_name: the creator of the user
+    :type creator_name: str
+    :param last_modifier_name: the user who last modified
+    :type last_modifier_name: str
+    :param url: the url to view this user online
+    :type url: type
+    :param version: the version
+    :type version: int
+    :param id: the ID of the user
+    :type id: int
+    :param creation_date: the date the user was created
+    :type creation_date: datetime
+    :param last_modification_date: the date the user was last modified
+    :type last_modification_date: datetime
+    """
+
+
+class ClusterInformation(object):
+    """
+    :param is_running: true if this node is part of a cluster
+    :type is_running: bool
+    :param name: the name of the cluster
+    :type name: str
+    :param member_count: the number of nodes in hte cluster, including this
+        node (this will be zero if this node is not clustered)
+    :type member_count: int
+    :param description: a description of the cluster
+    :type description: str
+    :param multicast_address: the address that this cluster uses for multicast
+        communication
+    :type multicast_address: str
+    :param multicast_port: the port that this cluster uses for multicast
+        communication
+    :type multicast_port: int
+    """
+
+
+class NodeStat(object):
+    """
+    :param node_id: an integer uniquely idetifying the node within the cluster
+    :type node_id: int
+    :param jvm_status: a dict containing attributes about the JVM memory usage
+        of node. Keys are "total.memory", "free.memory", "used.memory"
+    :type jvm_status: dict
+    :param props: a dict containing attributes of the node Keys are
+        "system.date", "system.time", "system.favourite.colour",
+        "java.version", "java.vendor", "jvm.version", "jvm.vendeor",
+        "jvm.implemtation.version", "java.runtime", "java.vm",
+        "user.name.word", "user.timezone", "operating.system",
+        "os.architecture", "fs.encoding"
+    :type props: dict
+    :param build_stats: a dict containing attributes of the build of
+        Confluence running on the node. Kyes are "confluence.home",
+        "system.uptime", "system.version", "build.number"
+    :type build_status: dict
+    """
 
 
 class ConfluenceException(Exception):

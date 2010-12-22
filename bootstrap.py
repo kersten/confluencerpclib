@@ -28,6 +28,7 @@ is_jython = sys.platform.startswith('java')
 
 try:
     import pkg_resources
+    import setuptools
 except ImportError:
     ez = {}
     exec urllib2.urlopen('http://peak.telecommunity.com/dist/ez_setup.py'

@@ -1,7 +1,7 @@
 import xmlrpclib
 
 
-class confluencerpclib():
+class connect():
 
     def __init__(self, confluenceRpcUrl=None, verbose=False):
         if confluenceRpcUrl is None or confluenceRpcUrl == "":
@@ -15,7 +15,7 @@ class confluencerpclib():
 
         try:
             self.token = self.server.confluence1.login(username, password)
-            return self.token
+            return True
         except xmlrpclib.Fault, err:
             raise ConfluenceException(err.faultString)
 

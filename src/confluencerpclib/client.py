@@ -1,7 +1,7 @@
 import xmlrpclib
 
 
-class connect():
+class Confluence(object):
 
     def __init__(self, confluenceRpcUrl=None, verbose=False):
         if confluenceRpcUrl is None or confluenceRpcUrl == "":

@@ -7,11 +7,14 @@ confluencerpclib is a python library to interface with [Atlassian][1]
 I develop it mainly for my [gedit plugin][3] wich should help me to easier edit
 content in Confluence
 
+Many thanks to [Myles Braithwaite][4] ([me@mylesbraithwaite.com][5])
+
+I've borrowed much code from his first version of the [pyConfluence][6] library but
+not totally agreed to his naming style, so I decided to make a new one.
+
 [1]:http://atlassian.com/ "Atlassian"
 [2]:http://www.atlassian.com/software/confluence/ "Confluence - Enterprise Wiki Software"
 [3]:https://github.com/kersten/confluence.gedit-plugin "gedit plugin"
-
-Many thanks to Myles Braithwaite (me@mylesbraithwaite.com :: http://mylesbraithwaite.com/blog/)
-
-I've borrowed much code from his first version of the pyConfluence library but
-not totally agreed to his naming style, so I decided to make a new one.
+[4]:http://mylesbraithwaite.com/blog/
+[5]:mailto:me@mylesbraithwaite.com
+[6]:https://github.com/myles/pyconfluence

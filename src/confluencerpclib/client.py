@@ -44,7 +44,16 @@ class Confluence(object):
         raise ConfluenceException("Not implemented yet.")
 
     def getSpaces(self):
-        raise ConfluenceException("Not implemented yet.")
+        try:
+            responses = self.server.confluence1.getSpaces(self.token)
+            spaces = []
+
+            for response in responses:
+                spaces += [SpaceSummary().display(response),]
+
+            return spaces
+        except xmlrpclib.Fault, err:
+            raise ConfluenceException(err.faultString)
 
     def getSpace(self, spaceKey):
         raise ConfluenceException("Not implemented yet.")
@@ -72,13 +81,31 @@ class Confluence(object):
         raise ConfluenceException("Not implemented yet.")
 
     def getPages(self, spaceKey):
-        raise ConfluenceException("Not implemented yet.")
+        """Returns all the PageSummaries in the space. Doesn't
+        include pages which are in the Trash.
+        :parma space_key:
+        :type space_key: str:
+        :rtype: list
+        """
+        try:
+            responses = self.server.confluence1.getPages(self.token, spaceKey)
+            pages = []
+            for response in responses:
+                pages += [PageSummary().display(response),]
+            return pages
+        except xmlrpclib.Fault, err:
+            raise ConfluenceException(err.faultString)
 
     def getPageByName(self, spaceKey, pageTitle):
         raise ConfluenceException("Not implemented yet.")
 
     def getPage(self, pageId):
-        raise ConfluenceException("Not implemented yet.")
+        try:
+            response = self.server.confluence1.getPage(self.token, pageId)
+            page = Page().display(response)
+            return page
+        except xmlrpclib.Fault, err:
+            raise ConfluenceException(err.faultString)
 
     def getPageHistory(self, pageId):
         raise ConfluenceException("Not implemented yet.")
@@ -505,7 +532,7 @@ class PageSummary(object):
         self.parentId = str(summary['parentId'])
         self.title = str(summary['title'])
         self.url = str(summary['url'])
-        self.locks = int(summary['locks'])
+        #self.locks = int(summary['locks'])
         return self
 
 
@@ -586,7 +613,7 @@ class Page(object):
         self.modified = str(page['modified'])
         self.modifier = str(page['modifier'])
         self.homePage = bool(page['homePage'])
-        self.lock = int(page['locks'])
+        #self.lock = int(page['locks'])
         self.contentStatus = str(page['contentStatus'])
         self.current = bool(page['current'])
         return self

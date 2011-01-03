@@ -144,7 +144,18 @@ class Confluence(object):
         raise ConfluenceException("Not implemented yet.")
 
     def storePage(self, page):
-        raise ConfluenceException("Not implemented yet.")
+        try:
+            #id, space, title, content and version
+            newPage = {
+                'id': page.id,
+                'space': page.space,
+                'title': page.title,
+                'content': page.content,
+                'version': str(page.version)
+            }
+            self.server.confluence1.storePage(self.token, newPage)
+        except xmlrpclib.Fault, err:
+            raise ConfluenceException(err.faultString)
 
     def updatePage(self, page, pageUpdateOptions):
         raise ConfluenceException("Not implemented yet.")
@@ -576,7 +587,7 @@ class Page(object):
         self.parentId = ''
         self.title = ''
         self.url = ''
-        self.version = ''
+        self.version = 0
         self.content = ''
         self.created = ''
         self.creator = ''

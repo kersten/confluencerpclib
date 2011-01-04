@@ -11,7 +11,7 @@ setup(
     url = 'http://github.com/kersten/confluencerpclib',
     license = 'original BSD license',
     description = 'A python library to connect to Confluence wiki.',
-    long_description = read('README'),
+    long_description = read('README.mdown'),
 
     author = 'Kersten Burkhardt',
     author_email = 'kerstenk@gmail.com',

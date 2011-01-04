@@ -367,7 +367,11 @@ class Confluence(object):
         raise ConfluenceException("Not implemented yet.")
 
     def addLabelByName(self, labelName, objectId):
-        raise ConfluenceException("Not implemented yet.")
+        try:
+            responses = self.server.confluence1.addLabelByName(self.token, labelName, objectId)
+            return responses
+        except xmlrpclib.Fault, err:
+            raise ConfluenceException(err.faultString)
 
     def addLabelById(self, labelId, objectId):
         raise ConfluenceException("Not implemented yet.")
@@ -382,7 +386,11 @@ class Confluence(object):
         raise ConfluenceException("Not implemented yet.")
 
     def removeLabelById(self, labelId, objectId):
-        raise ConfluenceException("Not implemented yet.")
+        try:
+            responses = self.server.confluence1.removeLabelByName(self.token, labelId, objectId)
+            return responses
+        except xmlrpclib.Fault, err:
+            raise ConfluenceException(err.faultString)
 
     def removeLabelByObject(self, labelObject, objectId):
         raise ConfluenceException("Not implemented yet.")

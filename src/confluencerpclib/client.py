@@ -185,8 +185,13 @@ class Confluence(object):
         except xmlrpclib.Fault, err:
             raise ConfluenceException(err.faultString)
 
-    def renderContent(self, spaceKey, pageId, content, parameters=None):
-        raise ConfluenceException("Not implemented yet.")
+    def renderContent(self, spaceKey, pageId, content=None):
+        try:
+            response = self.server.confluence1.renderContent(self.token, spaceKey, pageId, content)
+            html = response
+            return html
+        except xmlrpclib.Fault, err:
+            raise ConfluenceException(err.faultString)
 
     def removePage(self, pageId):
         raise ConfluenceException("Not implemented yet.")

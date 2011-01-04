@@ -147,18 +147,36 @@ class Confluence(object):
         try:
             #id, space, title, content and version
             newPage = {
+                'space': page.space,
+                'title': page.title,
+                'content': page.content
+            }
+            
+            try:
+                newPage['parentId'] = page.parentId
+            except:
+                pass
+            response = self.server.confluence1.storePage(self.token, newPage)
+            page = Page().display(response)
+            return page
+        except xmlrpclib.Fault, err:
+            raise ConfluenceException(err.faultString)
+
+    def updatePage(self, page, pageUpdateOptions=None):
+        try:
+            #id, space, title, content and version
+            newPage = {
                 'id': page.id,
                 'space': page.space,
                 'title': page.title,
                 'content': page.content,
                 'version': str(page.version)
             }
-            self.server.confluence1.storePage(self.token, newPage)
+            response = self.server.confluence1.updatePage(self.token, newPage, pageUpdateOptions)
+            page = Page().display(response)
+            return page
         except xmlrpclib.Fault, err:
             raise ConfluenceException(err.faultString)
-
-    def updatePage(self, page, pageUpdateOptions):
-        raise ConfluenceException("Not implemented yet.")
 
     def renderContent(self, spaceKey, pageId, content, parameters=None):
         raise ConfluenceException("Not implemented yet.")
@@ -298,7 +316,19 @@ class Confluence(object):
         raise ConfluenceException("Not implemented yet.")
 
     def getLabelsById(self, objectId):
-        raise ConfluenceException("Not implemented yet.")
+        """Returns all the labels for the objectId.
+        :param objectId:
+        :type objectId: str:
+        :rtype: list
+        """
+        try:
+            responses = self.server.confluence1.getLabelsById(self.token, objectId)
+            labels = []
+            for response in responses:
+                labels += [Label().display(response),]
+            return labels
+        except xmlrpclib.Fault, err:
+            raise ConfluenceException(err.faultString)
 
     def getMostPopularLabels(self, maxCount):
         raise ConfluenceException("Not implemented yet.")
@@ -963,6 +993,7 @@ class ContentPermissionSet(object):
 
 
 class Label(object):
+    
     """
     :param name: the name of the label
     :type name: str
@@ -973,6 +1004,31 @@ class Label(object):
     :param id: the ID of the label
     :type id: int
     """
+    def __init__(self):
+        self.name = ''
+        #self.owner = ''
+        self.lnamespace = ''
+        self.id = ''
+
+    def __repr__(self):
+        return '<%s %r>' % (type(self).__name__, self.name)
+
+    def __str__(self):
+        return "%s" % (self.name)
+
+    def __unicode__(self):
+        return unicode(__str__)
+
+    def display(self, label):
+        """Convert the XML-RPC dict to the RSSFeed class.
+        :param feed: The XML-RPC dict
+        :type feed: dict
+        """
+        self.name = str(label['name'])
+        #self.owner = str(label['owner'])
+        self.namespace = str(label['namespace'])
+        self.id = str(label['id'])
+        return self
 
 
 class UserInformation(object):

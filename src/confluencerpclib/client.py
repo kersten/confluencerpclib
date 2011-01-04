@@ -120,7 +120,14 @@ class Confluence(object):
         raise ConfluenceException("Not implemented yet.")
 
     def getAttachments(self, pageId):
-        raise ConfluenceException("Not implemented yet.")
+        try:
+            responses = self.server.confluence1.getAttachments(self.token, pageId)
+            attachments = []
+            for response in responses:
+                attachments += [Attachment().display(response),]
+            return attachments
+        except xmlrpclib.Fault, err:
+            raise ConfluenceException(err.faultString)
 
     def getAncestors(self, pageId):
         raise ConfluenceException("Not implemented yet.")
@@ -919,6 +926,7 @@ class SearchResult(object):
 
 
 class Attachment(object):
+    
     """
     :param id: numeric id of the attachment
     :type id: int
@@ -940,6 +948,43 @@ class Attachment(object):
     :param comment: comment for the attachment
     :type comment: str
     """
+    def __init__(self):
+        self.id = ''
+        self.pageId = ''
+        self.title = ''
+        self.fileName = ''
+        self.fileSize = ''
+        self.contentType = ''
+        self.created = ''
+        self.creator = ''
+        self.url = ''
+        self.comment = ''
+
+    def __repr__(self):
+        return '<%s %r>' % (type(self).__name__, self.title)
+
+    def __str__(self):
+        return "%s" % (self.title)
+
+    def __unicode__(self):
+        return unicode(__str__)
+
+    def display(self, attachment):
+        """Convert the XML-RPC dict to the Attachment class.
+        :param attachment: The XML-RPC dict
+        :type attachment: dict
+        """
+        self.id = str(attachment['id'])
+        self.pageId = str(attachment['pageId'])
+        self.title = str(attachment['title'])
+        self.fileName = str(attachment['fileName'])
+        self.fileSize = str(attachment['fileSize'])
+        self.contentType = str(attachment['contentType'])
+        self.created = str(attachment['created'])
+        self.creator = str(attachment['creator'])
+        self.url = str(attachment['url'])
+        self.comment = str(attachment['comment'])
+        return self
 
 
 class Comment(object):

@@ -9,11 +9,16 @@ class Confluence(object):
 
         self.url = confluenceRpcUrl
         self.verbose = verbose
+    
+    def connect(self):
+        try:
+            self.server = xmlrpclib.ServerProxy(self.url, verbose=self.verbose)
+        except xmlrpclib.Fault, err:
+            raise ConfluenceException(err.faultString)
 
     def login(self, username, password):
-        self.server = xmlrpclib.ServerProxy(self.url, verbose=self.verbose)
-
         try:
+            self.connect()
             self.token = self.server.confluence1.login(username, password)
             return True
         except xmlrpclib.Fault, err:
@@ -188,6 +193,12 @@ class Confluence(object):
                 'content': page.content,
                 'version': str(page.version)
             }
+            
+            try:
+                newPage['parentId'] = page.parentId
+            except:
+                pass
+            
             response = self.server.confluence1.updatePage(self.token, newPage, pageUpdateOptions)
             page = Page().display(response)
             return page

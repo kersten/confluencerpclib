@@ -132,7 +132,16 @@ class Confluence(object):
         raise ConfluenceException("Not implemented yet.")
 
     def getComments(self, pageId):
-        raise ConfluenceException("Not implemented yet.")
+        try:
+            responses = self.server.confluence1.getComments(self.token, pageId)
+            if responses:
+                comments = []
+                for response in responses:
+                    comments += [Comment().display(response),]
+                return comments
+            return []
+        except xmlrpclib.Fault, err:
+            raise ConfluenceException(err.faultString)
 
     def getComment(self, commentId):
         raise ConfluenceException("Not implemented yet.")
@@ -256,7 +265,12 @@ class Confluence(object):
         raise ConfluenceException("Not implemented yet.")
 
     def getUser(self, username):
-        raise ConfluenceException("Not implemented yet.")
+        try:
+            response = self.server.confluence1.getUser(self.token, username)
+            user = User().display(response)
+            return user
+        except xmlrpclib.Fault, err:
+            raise ConfluenceException(err.faultString)
 
     def addUser(self, user, password):
         raise ConfluenceException("Not implemented yet.")
@@ -387,7 +401,7 @@ class Confluence(object):
 
     def removeLabelById(self, labelId, objectId):
         try:
-            responses = self.server.confluence1.removeLabelByName(self.token, labelId, objectId)
+            responses = self.server.confluence1.removeLabelById(self.token, labelId, objectId)
             return responses
         except xmlrpclib.Fault, err:
             raise ConfluenceException(err.faultString)
@@ -943,6 +957,7 @@ class Attachment(object):
 
 
 class Comment(object):
+    
     """
     :param id: numeric id of the comment
     :type id: str
@@ -956,12 +971,52 @@ class Comment(object):
     :type url: str
     :param created: creation date of the comment
     :type created: datetime
-    :param creator: creator of the attachment
+    :param creator: creator of the comment
     :type creator: str
     """
+    def __init__(self):
+        self.id = ''
+        self.parentId = ''
+        self.pageId = ''
+        self.title = ''
+        self.content = ''
+        self.url = ''
+        self.created = ''
+        self.creator = ''
+        self.modified = ''
+        self.modifier = ''
+
+    def __repr__(self):
+        return '<%s %r>' % (type(self).__name__, self.title)
+
+    def __str__(self):
+        return "%s" % (self.title)
+
+    def __unicode__(self):
+        return unicode(__str__)
+
+    def display(self, comment):
+        """Convert the XML-RPC dict to the Comment class.
+        :param feed: The XML-RPC dict
+        :type feed: dict
+        """
+        print comment
+        
+        self.id = str(comment['id'])
+        self.parentId = str(comment['parentId'])
+        self.pageId = str(comment['pageId'])
+        self.title = str(comment['title'])
+        self.content = str(comment['content'])
+        self.url = str(comment['url'])
+        self.created = str(comment['created'])
+        self.creator = str(comment['creator'])
+        self.modified = str(comment['modified'])
+        self.modifier = str(comment['modifier'])
+        return self
 
 
 class User(object):
+    
     """
     :param name: the username of this user
     :type name: str
@@ -972,6 +1027,31 @@ class User(object):
     :param url: the url to view this user online
     :type url: str
     """
+    def __init__(self):
+        self.name = ''
+        self.fullname = ''
+        self.email = ''
+        self.url = ''
+
+    def __repr__(self):
+        return '<%s %r>' % (type(self).__name__, self.fullname)
+
+    def __str__(self):
+        return "%s" % (self.fullname)
+
+    def __unicode__(self):
+        return unicode(__str__)
+
+    def display(self, user):
+        """Convert the XML-RPC dict to the User class.
+        :param user: The XML-RPC dict
+        :type user: dict
+        """
+        self.name = str(user['name'])
+        self.fullname = str(user['fullname'])
+        self.email = str(user['email'])
+        self.url = str(user['url'])
+        return self
 
 
 class ContentPermission(object):
@@ -1015,7 +1095,7 @@ class Label(object):
     def __init__(self):
         self.name = ''
         #self.owner = ''
-        self.lnamespace = ''
+        self.namespace = ''
         self.id = ''
 
     def __repr__(self):
@@ -1040,6 +1120,7 @@ class Label(object):
 
 
 class UserInformation(object):
+    
     """
     :param username: the username of this user
     :type username: str
@@ -1060,6 +1141,31 @@ class UserInformation(object):
     :param last_modification_date: the date the user was last modified
     :type last_modification_date: datetime
     """
+    def __init__(self):
+        self.name = ''
+        #self.owner = ''
+        self.namespace = ''
+        self.id = ''
+
+    def __repr__(self):
+        return '<%s %r>' % (type(self).__name__, self.name)
+
+    def __str__(self):
+        return "%s" % (self.name)
+
+    def __unicode__(self):
+        return unicode(__str__)
+
+    def display(self, label):
+        """Convert the XML-RPC dict to the RSSFeed class.
+        :param feed: The XML-RPC dict
+        :type feed: dict
+        """
+        self.name = str(label['name'])
+        #self.owner = str(label['owner'])
+        self.namespace = str(label['namespace'])
+        self.id = str(label['id'])
+        return self
 
 
 class ClusterInformation(object):

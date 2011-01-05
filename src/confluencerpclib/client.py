@@ -214,7 +214,11 @@ class Confluence(object):
             raise ConfluenceException(err.faultString)
 
     def removePage(self, pageId):
-        raise ConfluenceException("Not implemented yet.")
+        try:
+            response = self.server.confluence1.removePage(self.token, pageId)
+            return response
+        except xmlrpclib.Fault, err:
+            raise ConfluenceException(err.faultString)
 
     def movePage(self, targetPageId, position):
         raise ConfluenceException("Not implemented yet.")

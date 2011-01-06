@@ -441,6 +441,7 @@ class Confluence(object):
 
 
 class ServerInfo(object):
+    
     """
     :param majorVersion: the major version number of the Confluence instance
     :type key: int
@@ -456,7 +457,6 @@ class ServerInfo(object):
     :param baseUrl: The base URL for the confluence instance
     :type key: str
     """
-
     def __init__(self):
         self.majorVersion = 0
         self.minorVersion = 0
@@ -494,6 +494,7 @@ class ServerInfo(object):
 
 
 class SpaceSummary(object):
+    
     """
     :param key: the space key
     :type key: str
@@ -504,7 +505,6 @@ class SpaceSummary(object):
     :param url: the url to the view this space online
     :type url: str
     """
-
     def __init__(self):
         self.key = ''
         self.name = ''
@@ -533,6 +533,7 @@ class SpaceSummary(object):
 
 
 class Space(object):
+    
     """
     :param key: the space key
     :type key: str
@@ -545,7 +546,6 @@ class Space(object):
     :param description: the HTML rendered space description
     :type description: str
     """
-
     def __init__(self):
         self.key = ''
         self.name = ''
@@ -580,6 +580,7 @@ class Space(object):
 
 
 class PageSummary(object):
+    
     """
     :param id: the id of the page
     :type key: str
@@ -594,7 +595,6 @@ class PageSummary(object):
     :param locks: the number of locks current on this page
     :type type: int
     """
-
     def __init__(self):
         self.id = ''
         self.space = ''
@@ -627,6 +627,7 @@ class PageSummary(object):
 
 
 class Page(object):
+    
     """
     :param id: the id of the page
     :type id: str
@@ -659,7 +660,6 @@ class Page(object):
     :param current: whether the page is current and not deleted
     :type current: bool
     """
-
     def __init__(self):
         self.id = ''
         self.space = ''
@@ -741,6 +741,7 @@ class PageUpdateOptions(object):
 
 
 class PageHistorySummary(object):
+    
     """
     :param id: the id of the historical page
     :type id: str
@@ -753,7 +754,6 @@ class PageHistorySummary(object):
     :param versionComment: the comment made when the version was changed
     :type versionComment: str
     """
-
     def __init__(self):
         self.id = ''
         self.version = 0
@@ -787,6 +787,7 @@ class PageHistorySummary(object):
 
 
 class BlogEntrySummary(object):
+    
     """
     :param id: the id of the blog entry
     :type id: str
@@ -801,7 +802,6 @@ class BlogEntrySummary(object):
     :param publishDate: the date the blog post was published
     :type publishDate: datetime
     """
-
     def __init__(self):
         self.id = ''
         self.space = ''
@@ -834,6 +834,7 @@ class BlogEntrySummary(object):
 
 
 class BlogEntry(object):
+    
     """
     :param id: the id of the blog entry
     :type id: str
@@ -850,7 +851,6 @@ class BlogEntry(object):
     :param locks: the number of locks current on this page
     :type locks: int
     """
-
     def __init__(self):
         self.id = ''
         self.space = ''
@@ -885,13 +885,13 @@ class BlogEntry(object):
 
 
 class RSSFeed(object):
+    
     """
     :param url: the URL of the RSS feed
     :type url: str
     :param title: the feed's title
     :type title: str
     """
-
     def __init__(self):
         self.url = ''
         self.title = ''

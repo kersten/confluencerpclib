@@ -12,6 +12,15 @@ Many thanks to [Myles Braithwaite][4] ([me@mylesbraithwaite.com][5])
 I've borrowed much code from his first version of the [pyConfluence][6] library but
 not totally agreed to his naming style, so I decided to make a new one.
 
+### Donations ###
+
+Please feel free to donate if you like this software. Click on the following
+link to donate:
+
+[![Flattr this](http://api.flattr.com/button/flattr-badge-large.png)](http://flattr.com/thing/112499/confluence-gedit-plugin)
+
+[![Donate](http://pledgie.com/campaigns/14263.png)](http://pledgie.com/campaigns/14263)
+
 [1]:http://atlassian.com/ "Atlassian"
 [2]:http://www.atlassian.com/software/confluence/ "Confluence - Enterprise Wiki Software"
 [3]:https://github.com/kersten/confluence.gedit-plugin "gedit plugin"

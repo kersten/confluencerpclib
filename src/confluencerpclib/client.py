@@ -233,7 +233,11 @@ class Confluence(object):
         raise ConfluenceException("Not implemented yet.")
 
     def addAttachment(self, contentId, attachment, attachmentData):
-        raise ConfluenceException("Not implemented yet.")
+        try:
+            response = self.server.confluence1.addAttachment(self.token, contentId, attachment, xmlrpclib.Binary(attachmentData))
+            return response
+        except xmlrpclib.Fault, err:
+            raise ConfluenceException(err.faultString)
 
     def removeAttachment(self, contentId, fileName):
         raise ConfluenceException("Not implemented yet.")

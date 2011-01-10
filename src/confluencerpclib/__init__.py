@@ -1,4 +1,4 @@
-from confluencerpclib.client import Confluence, ConfluenceException, Page, PageUpdateOptions
+from confluencerpclib.client import Confluence, ConfluenceException, Page, PageUpdateOptions, Attachment
 
 __version__ = '0.1'
 __project__ = 'confluencerpclib'
